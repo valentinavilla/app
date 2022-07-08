@@ -1,9 +1,8 @@
 package com.example.application.data.generator;
 
-import com.example.application.data.entity.Company;
 import com.example.application.data.entity.Contact;
 import com.example.application.data.entity.Status;
-import com.example.application.data.repository.CompanyRepository;
+import com.example.application.data.entity.Contact.genere;
 import com.example.application.data.repository.ContactRepository;
 import com.example.application.data.repository.StatusRepository;
 import com.vaadin.exampledata.DataType;
@@ -23,7 +22,7 @@ import org.springframework.context.annotation.Bean;
 public class DataGenerator {
 
     @Bean
-    public CommandLineRunner loadData(ContactRepository contactRepository, CompanyRepository companyRepository,
+    public CommandLineRunner loadData(ContactRepository contactRepository,
             StatusRepository statusRepository) {
 
         return args -> {
@@ -35,13 +34,9 @@ public class DataGenerator {
             int seed = 123;
 
             logger.info("Generating demo data");
-            ExampleDataGenerator<Company> companyGenerator = new ExampleDataGenerator<>(Company.class,
-                    LocalDateTime.now());
-            companyGenerator.setData(Company::setName, DataType.COMPANY_NAME);
-            List<Company> companies = companyRepository.saveAll(companyGenerator.create(5, seed));
-
+           
             List<Status> statuses = statusRepository
-                    .saveAll(Stream.of("Imported lead", "Not contacted", "Contacted", "Customer", "Closed (lost)")
+                    .saveAll(Stream.of("Presa in carico", "Da confermare", "Cancellato", "Attesa servizi", "Confermato","Calendarizzato")
                             .map(Status::new).collect(Collectors.toList()));
 
             logger.info("... generating 50 Contact entities...");
@@ -50,11 +45,12 @@ public class DataGenerator {
             contactGenerator.setData(Contact::setFirstName, DataType.FIRST_NAME);
             contactGenerator.setData(Contact::setLastName, DataType.LAST_NAME);
             contactGenerator.setData(Contact::setEmail, DataType.EMAIL);
+        
 
             Random r = new Random(seed);
             List<Contact> contacts = contactGenerator.create(50, seed).stream().map(contact -> {
-                contact.setCompany(companies.get(r.nextInt(companies.size())));
                 contact.setStatus(statuses.get(r.nextInt(statuses.size())));
+                if(Math.random()>0.5)contact.setGenere(genere.F);
                 return contact;
             }).collect(Collectors.toList());
 

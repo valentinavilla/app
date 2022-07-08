@@ -1,8 +1,6 @@
 package com.example.application.data.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -17,12 +15,6 @@ public class Contact extends AbstractEntity {
     @NotEmpty
     private String lastName = "";
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    @NotNull
-    @JsonIgnoreProperties({"employees"})
-    private Company company;
-
     @NotNull
     @ManyToOne
     private Status status;
@@ -30,6 +22,17 @@ public class Contact extends AbstractEntity {
     @Email
     @NotEmpty
     private String email = "";
+
+    public enum genere{
+        M,
+        F
+    }
+
+    private genere sesso=genere.M;
+
+    public void setGenere(genere s){
+        this.sesso=s;
+    }
 
     @Override
     public String toString() {
@@ -52,14 +55,6 @@ public class Contact extends AbstractEntity {
         this.lastName = lastName;
     }
 
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
     public Status getStatus() {
         return status;
     }
@@ -75,4 +70,13 @@ public class Contact extends AbstractEntity {
     public void setEmail(String email) {
         this.email = email;
     }
-}
+
+    public String getImageUrl() {
+        if(sesso==genere.M){return "images/tipo.jpg";}
+        if (sesso==genere.F) {return "images/tipa.jpg";}
+        return "images/pic.jpg";
+
+    }
+
+ }
+
