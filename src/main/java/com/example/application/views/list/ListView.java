@@ -104,12 +104,15 @@ public class ListView extends VerticalLayout {
             return row;
         }));
 
-        show.addValueChangeListener(event->editContact(event.getValue()));
-        
+        //show.addValueChangeListener(event->editContact(event.getValue()));
 
         //come vado alla view con le info sull'utente?
-        //show.getUI().ifPresent(ui->ui.navigate(InfoUtente.class));
+        show.addValueChangeListener(e->viewDetails(e.getValue()));
 
+    }
+
+    private void viewDetails(Contact contatto){
+        UI.getCurrent().navigate(InfoUtente.class, contatto.getIDPamac());
     }
 
     public void editContact(Contact contact) { 

@@ -34,7 +34,7 @@ public class DataGenerator {
             int seed = 123;
 
             logger.info("Generating demo data");
-           
+
             List<Status> statuses = statusRepository
                     .saveAll(Stream.of("Presa in carico", "Da confermare", "Cancellato", "Attesa servizi", "Confermato","Calendarizzato")
                             .map(Status::new).collect(Collectors.toList()));
@@ -45,11 +45,12 @@ public class DataGenerator {
             contactGenerator.setData(Contact::setFirstName, DataType.FIRST_NAME);
             contactGenerator.setData(Contact::setLastName, DataType.LAST_NAME);
             contactGenerator.setData(Contact::setEmail, DataType.EMAIL);
-        
+            contactGenerator.setData(Contact::setIDPamac, DataType.ID);
 
             Random r = new Random(seed);
             List<Contact> contacts = contactGenerator.create(50, seed).stream().map(contact -> {
                 contact.setStatus(statuses.get(r.nextInt(statuses.size())));
+
                 if(Math.random()>0.5)contact.setGenere(genere.F);
                 return contact;
             }).collect(Collectors.toList());

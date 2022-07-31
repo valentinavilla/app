@@ -6,8 +6,12 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.vaadin.flow.router.RouteParameters;
+
 @Entity
 public class Contact extends AbstractEntity {
+
+    private Integer IDPamac;
 
     @NotEmpty
     private String firstName = "";
@@ -38,6 +42,9 @@ public class Contact extends AbstractEntity {
     public String toString() {
         return firstName + " " + lastName;
     }
+
+    public Integer getIDPamac(){return IDPamac;}
+    public void setIDPamac(Integer newID){this.IDPamac=newID;}
 
     public String getFirstName() {
         return firstName;

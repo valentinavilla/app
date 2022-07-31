@@ -27,6 +27,10 @@ public class CrmService {
         }
     }
 
+    public Contact getContact(Integer IDPAMAC){
+        return contactRepository.search(IDPAMAC);
+    }
+
     public long countContacts() {
         return contactRepository.count();
     }
