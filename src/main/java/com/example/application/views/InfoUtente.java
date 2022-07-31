@@ -21,7 +21,6 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 @Route(value = "InfoUtente",layout=MainLayout.class) 
 @PageTitle("InfoUtente")
@@ -68,7 +67,7 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 
     private Component createImageSection() {
         Image image = new Image(contatto.getImageUrl(),"Immagine profilo");
-        image.addClassName(LumoUtility.Margin.Horizontal.LARGE);
+        image.addClassName("margin-h-l");
 		image.setHeight("200px");
 		image.setWidth("200px");
 
@@ -150,3 +149,4 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
     
 
 }
+
