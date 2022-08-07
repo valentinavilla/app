@@ -4,6 +4,11 @@ import com.example.application.data.entity.Contact;
 import com.example.application.data.service.CrmService;
 import com.example.application.views.list.ContactForm;
 import com.example.application.views.questionario.QuestionarioView;
+import com.example.application.views.utili.BorderRadius;
+import com.example.application.views.utili.Horizontal;
+import com.example.application.views.utili.ListItem;
+import com.example.application.views.utili.MyFlexLayout;
+import com.example.application.views.utili.Vertical;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
@@ -34,7 +39,6 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 	private VerticalLayout content=new VerticalLayout();
     private ContactForm form;
 
-
     public InfoUtente(CrmService s){
         this.service=s;
         if (service.getContact(idContatto)==null){
@@ -57,21 +61,30 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
     }
 
     private Component configureInfo(Contact c) {
-        VerticalLayout Vl=new VerticalLayout();
-        Vl.add(
-            createImageSection()
-            
+        MyFlexLayout Vl=new MyFlexLayout(
+            createImageSection(),
+            createRequestsHeader()
             );
+        Vl.setFlexDirection(FlexDirection.COLUMN);
+        Vl.setMargin(Horizontal.AUTO, Vertical.RESPONSIVE_L);
+        Vl.setMaxWidth("840px");
         return Vl;
     }
+
+    private Component createRequestsHeader() {
+        return new VerticalLayout();
+    }
+
 
     private Component createImageSection() {
         Image image = new Image(contatto.getImageUrl(),"Immagine profilo");
         image.addClassName("margin-h-l");
+        setBorderRadius(BorderRadius._50, image);
 		image.setHeight("200px");
 		image.setWidth("200px");
 
-        FlexLayout nome=new FlexLayout(createTertiaryIcon(VaadinIcon.MALE));
+        /* 
+        ListItem nome=new ListItem(createTertiaryIcon(VaadinIcon.MALE),"","nome");
         nome.addClassName("h2");
         nome.getElement().setAttribute("with-divider", true);
         nome.setId("nome");
@@ -93,7 +106,8 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 		section.addClassName("bsb-b");
         section.getElement().getStyle().set("flex", "1");
 
-		return section;
+		return section;*/
+        return image;
     }
 
     public static Icon createTertiaryIcon(VaadinIcon icon) {
@@ -101,6 +115,14 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
         i.setColor("var(--lumo-tertiary-text-color)");
 		return i;
 	}
+
+    public static void setBorderRadius(BorderRadius borderRadius,
+    Component... components) {
+    for (Component component : components) {
+        component.getElement().getStyle().set("border-radius",
+        borderRadius.getValue());
+        }
+    }
 
     private Tabs getTabs() {
         paziente = new Tab("Paziente");
