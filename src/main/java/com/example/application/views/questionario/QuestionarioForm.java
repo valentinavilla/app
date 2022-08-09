@@ -1,5 +1,7 @@
 package com.example.application.views.questionario;
 
+import java.util.Date;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -11,6 +13,7 @@ import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.TextField;
 
 public class QuestionarioForm extends FormLayout {
+    Date dataCompilazione;
     TextField firstName = new TextField("nome"); 
     TextField lastName = new TextField("cognome");
 
@@ -41,6 +44,7 @@ public class QuestionarioForm extends FormLayout {
     RadioButtonGroup<String> peso=new RadioButtonGroup<>();
 
     public QuestionarioForm() {
+        dataCompilazione=new Date();
         addClassName("questionario-form"); 
         H1 a=new H1("PARTE A, determinanti della fragilità");
         H1 b=new H1("PARTE B, componenti della fragilità");
@@ -75,21 +79,26 @@ public class QuestionarioForm extends FormLayout {
             );
       }
 
+    public Date getDataCompilazione(){return dataCompilazione;}
+
     private Component getInfoSociali() {
         RadioButtonGroup<String> vive=new RadioButtonGroup<>();
         vive.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
         vive.setLabel("vive da solo?");
         vive.setItems("si", "no");
+        vive.setSizeFull();
 
         RadioButtonGroup<String> mancanza=new RadioButtonGroup<>();
         mancanza.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
         mancanza.setLabel("A volte sente la mancanza di persone intorno a lei?");
         mancanza.setItems("si","qualche volta", "no");
+        mancanza.setSizeFull();
 
         RadioButtonGroup<String> sostegno=new RadioButtonGroup<>();
         sostegno.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
         sostegno.setLabel("Riceve sufficiente sostegno dalle altre persone?");
         sostegno.setItems("si", "no");
+        sostegno.setSizeFull();
 
         return new VerticalLayout(vive,mancanza,sostegno);
     }
@@ -99,21 +108,25 @@ public class QuestionarioForm extends FormLayout {
         memo.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
         memo.setLabel("Ha problemi di memoria?");
         memo.setItems("si", "qualche volta","no");
+        memo.setSizeFull();
 
         RadioButtonGroup<String> morale=new RadioButtonGroup<>();
         morale.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
         morale.setLabel("Si è sentito giù di morale durante l'ultimo mese?");
         morale.setItems("si","qualche volta", "no");
+        morale.setSizeFull();
 
         RadioButtonGroup<String> ansia=new RadioButtonGroup<>();
         ansia.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
         ansia.setLabel("Si è sentito nervoso o ansioso durante l'ultimo mese?");
         ansia.setItems("si","qualche volta" ,"no");
+        ansia.setSizeFull();
 
         RadioButtonGroup<String> problem=new RadioButtonGroup<>();
         problem.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
         problem.setLabel("Si è sentito giù di morale durante l'ultimo mese?");
         problem.setItems("si", "no");
+        problem.setSizeFull();
 
         return new VerticalLayout(memo,morale,ansia,problem);
     }

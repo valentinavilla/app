@@ -13,6 +13,8 @@ public class MyFlexLayout extends FlexLayout{
 		spacings=new ArrayList<>();
 	}
 
+
+
 	public MyFlexLayout(Component... components ){
 		super(components);
 		spacings= new ArrayList<>();
@@ -55,7 +57,4 @@ public class MyFlexLayout extends FlexLayout{
 			spacings.add(size);
 		}
 	}
-
-
-
 }

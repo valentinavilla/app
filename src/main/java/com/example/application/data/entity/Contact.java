@@ -1,15 +1,21 @@
 package com.example.application.data.entity;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.example.application.views.questionario.QuestionarioForm;
+
 @Entity
 public class Contact extends AbstractEntity {
 
     private Integer IDPamac;
+    //private List<Richiesta> richieste;
+    private QuestionarioForm questionario;
 
     @NotEmpty
     private String firstName = "";
@@ -80,8 +86,23 @@ public class Contact extends AbstractEntity {
         if(sesso==genere.M){return "images/tipo.jpg";}
         if (sesso==genere.F) {return "images/tipa.jpg";}
         return "images/pic.jpg";
-
     }
+
+    public QuestionarioForm getQuestionario() {
+        if(questionario==null){questionario=new QuestionarioForm();}
+        return questionario;
+    }
+
+    /*public void addNuovaRichiesta(String richiesta){
+        richieste.add( new Richiesta(richiesta));
+    }
+    public void addNuovaRichiesta(Richiesta richiesta){
+        richieste.add(richiesta);
+    }
+
+    public List<Richiesta> getRichieste(){
+        return richieste;
+    }*/
 
  }
 

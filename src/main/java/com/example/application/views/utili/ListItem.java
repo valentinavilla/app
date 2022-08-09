@@ -27,14 +27,15 @@ public class ListItem extends MyFlexLayout {
 		setSpacing(Right.L);
 
 		this.primary = new Label(primary);
-		this.secondary = createLabel(FontSize.S, TextColor.SECONDARY,
-				secondary);
+		this.secondary = createLabel(FontSize.S, TextColor.SECONDARY,secondary);
 
-		content = new MyFlexLayout(this.primary, this.secondary);
+		content = new MyFlexLayout(this.secondary, this.primary);
 		content.setClassName(CLASS_NAME + "__content");
 		content.setFlexDirection(FlexDirection.COLUMN);
 		add(content);
 	}
+
+	
 
 	public static Label createLabel(FontSize size, TextColor color,String text) {
 		Label label = new Label(text);

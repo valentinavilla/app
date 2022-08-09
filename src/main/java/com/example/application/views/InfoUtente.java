@@ -1,22 +1,32 @@
 package com.example.application.views;
 
+import java.time.LocalDate;
+
 import com.example.application.data.entity.Contact;
+import com.example.application.data.entity.Richiesta;
 import com.example.application.data.service.CrmService;
 import com.example.application.views.list.ContactForm;
 import com.example.application.views.questionario.QuestionarioView;
 import com.example.application.views.utili.BorderRadius;
+import com.example.application.views.utili.Bottom;
 import com.example.application.views.utili.Horizontal;
 import com.example.application.views.utili.ListItem;
 import com.example.application.views.utili.MyFlexLayout;
+import com.example.application.views.utili.Top;
 import com.example.application.views.utili.Vertical;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexDirection;
+import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexWrap;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
@@ -38,6 +48,15 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 	private Tab altro;
 	private VerticalLayout content=new VerticalLayout();
     private ContactForm form;
+    public int VISIBLE_RECENT_TRANSACTIONS = 4;
+
+    //private static final ThreadLocal<DateTimeFormatter> dateFormat = ThreadLocal
+   // .withInitial(() -> DateTimeFormatter.ofPattern("MMM dd, YYYY"));
+
+    ListItem nome;
+    ListItem stat;
+    ListItem updated;
+
 
     public InfoUtente(CrmService s){
         this.service=s;
@@ -47,7 +66,7 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
             add(v);}
         else{
             contatto=service.getContact(idContatto);
-            add(getTabs(), content);}
+            add(getTabs(),content);}
     }
 
     
@@ -63,7 +82,8 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
     private Component configureInfo(Contact c) {
         MyFlexLayout Vl=new MyFlexLayout(
             createImageSection(),
-            createRequestsHeader()
+            createRecentRequestsHeader()
+            //createRecentRequestsList()
             );
         Vl.setFlexDirection(FlexDirection.COLUMN);
         Vl.setMargin(Horizontal.AUTO, Vertical.RESPONSIVE_L);
@@ -71,10 +91,37 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
         return Vl;
     }
 
-    private Component createRequestsHeader() {
-        return new VerticalLayout();
-    }
 
+   /* private Component createRecentRequestsList() {
+        Div items = new Div();
+		items.addClassNames("bsb-b", "padding-b-l");
+
+		for (int i = 0; i < VISIBLE_RECENT_TRANSACTIONS; i++) {
+			Richiesta request = contatto.getRichieste().get(i);
+			Label label = new Label(request.getStatoRichiesta());
+            label.addClassName("h5");
+
+			if (request.getStatoRichiesta()=="Conclusa") {
+                label.getElement().getStyle().set("color","var(--lumo-success-text-color)");
+			} else {
+				label.getElement().getStyle().set("color", "var(--lumo-success-contrast-color)");
+			}
+			ListItem item = new ListItem(
+					
+					request.getName(),
+					formatDate(LocalDate.now().minusDays(i)),
+					label
+			);
+			// Dividers for all but the last item
+			item.setDividerVisible(i < VISIBLE_RECENT_TRANSACTIONS - 1);
+			items.add(item);
+        }
+        return items;
+    }*/
+
+    public static String formatDate(LocalDate date) {
+        return date.getDayOfMonth()+"/"+date.getMonthValue()+"/"+date.getYear();
+	}
 
     private Component createImageSection() {
         Image image = new Image(contatto.getImageUrl(),"Immagine profilo");
@@ -83,31 +130,32 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 		image.setHeight("200px");
 		image.setWidth("200px");
 
-        /* 
-        ListItem nome=new ListItem(createTertiaryIcon(VaadinIcon.MALE),"","nome");
+        nome=new ListItem(createTertiaryIcon(VaadinIcon.MALE)," "+contatto.getFirstName()+" "+contatto.getLastName(),"nome");
         nome.addClassName("h2");
         nome.getElement().setAttribute("with-divider", true);
         nome.setId("nome");
-        nome.setFlexDirection(FlexDirection.COLUMN_REVERSE);
+        nome.setFlexDirection(FlexDirection.ROW);
 
-        FlexLayout stat=new FlexLayout(createTertiaryIcon(VaadinIcon.INFO));
+        stat=new ListItem(createTertiaryIcon(VaadinIcon.INFO)," "+contatto.getStatus().toString(),"stato");
         stat.getElement().setAttribute("with-divider", true);
         stat.setId("status");
-        stat.setFlexDirection(FlexDirection.COLUMN_REVERSE);
         stat.getElement().setProperty("white.space", "pre-line");
 
-		FlexLayout updated = new FlexLayout(createTertiaryIcon(VaadinIcon.CALENDAR));
-		updated.setFlexDirection(FlexDirection.COLUMN_REVERSE);
+		updated = new ListItem(createTertiaryIcon(VaadinIcon.CALENDAR)," "+ contatto.getQuestionario().getDataCompilazione().getDay()+"/"+contatto.getQuestionario().getDataCompilazione().getMonth()+"/"+contatto.getQuestionario().getDataCompilazione().getYear(),"data ultimo questionario");
+		updated.setFlexDirection(FlexDirection.ROW);
 
-        FlexLayout listItems = new FlexLayout(nome, stat, updated);
+        MyFlexLayout listItems = new MyFlexLayout(nome, stat, updated);
 		listItems.setFlexDirection(FlexDirection.COLUMN);
+        listItems.getElement().setAttribute("with-divider", true);
 
-		FlexLayout section = new FlexLayout(image, listItems);
+		MyFlexLayout section = new MyFlexLayout(image, listItems);
 		section.addClassName("bsb-b");
-        section.getElement().getStyle().set("flex", "1");
+        section.setAlignItems(Alignment.CENTER);
+        section.setFlexWrap(FlexWrap.WRAP);
+        section.setJustifyContentMode(JustifyContentMode.CENTER);
+        section.getElement().setAttribute("with-divider", true);
 
-		return section;*/
-        return image;
+		return section;
     }
 
     public static Icon createTertiaryIcon(VaadinIcon icon) {
@@ -124,6 +172,23 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
         }
     }
 
+    private Component createRecentRequestsHeader() {
+		Label titolo =new Label("Richieste più recenti:");
+        titolo.addClassName("h2");
+
+		Button viewAll = new Button("Vedi tutte");
+        viewAll.addThemeVariants(ButtonVariant.LUMO_SMALL);
+        viewAll.getElement().setAttribute("aria-label", "Vedi tutte");
+		viewAll.addClickListener(
+				e -> Notification.show("da implementare", 2000,Notification.Position.BOTTOM_CENTER));
+		viewAll.addClassName("margin-l-a");
+
+		MyFlexLayout header = new MyFlexLayout(titolo, viewAll);
+		header.setAlignItems(Alignment.CENTER);
+		header.setMargin(Bottom.M, Horizontal.RESPONSIVE_L, Top.L);
+		return header;
+	}
+
     private Tabs getTabs() {
         paziente = new Tab("Paziente");
         questionario= new Tab("Questionario");
@@ -133,7 +198,7 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
         tabs.setWidthFull();
         tabs.addThemeVariants(TabsVariant.LUMO_EQUAL_WIDTH_TABS);
         tabs.addSelectedChangeListener(event ->
-	    setContent(event.getSelectedTab())
+	        setContent(event.getSelectedTab())
         );
 
         
@@ -149,8 +214,6 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 		content.removeAll();
 
 		if (tab.equals(paziente)) {
-            content.add(configureInfo(contatto));
-			content.add(new Paragraph("qui vedrai le info del paziente"));
             content.add(configureInfo(contatto));
 		} else if (tab.equals(questionario)) {
 			content.add(new QuestionarioView());
