@@ -16,6 +16,10 @@ public class Contact extends AbstractEntity {
     private Integer IDPamac;
     //private List<Richiesta> richieste;
     private QuestionarioForm questionario;
+    private Integer indiceFragilitàFisica=0;
+    private Integer indiceFragilitàPsicologica=0;
+    private Integer indiceFragilitàSociale=0;
+
 
     @NotEmpty
     private String firstName = "";
@@ -103,6 +107,13 @@ public class Contact extends AbstractEntity {
     public List<Richiesta> getRichieste(){
         return richieste;
     }*/
+
+    public void setIndiceFragilitàFisica(int i){this.indiceFragilitàFisica=i;}
+    public void setIndiceFragilitàPsicologica(int i){this.indiceFragilitàPsicologica=i;}
+    public void setIndiceFragilitàSociale(int i){this.indiceFragilitàSociale=i;}
+    public int getIndiceFragilitaFisica(){return indiceFragilitàFisica;}
+    public int getIndiceFragilitaPsico(){return indiceFragilitàPsicologica;}
+    public int getIndiceFragilitaSociale(){return indiceFragilitàSociale;}
 
  }
 

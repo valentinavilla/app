@@ -69,7 +69,6 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
             add(getTabs(),content);}
     }
 
-    
     private void configureForm() {
         form = new ContactForm( service.findAllStatuses()); 
         form.setWidth("25em");
@@ -82,8 +81,10 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
     private Component configureInfo(Contact c) {
         MyFlexLayout Vl=new MyFlexLayout(
             createImageSection(),
-            createRecentRequestsHeader()
+            createRecentRequestsHeader(),
             //createRecentRequestsList()
+            createIndiceHeader(),
+            createIndiciSection()
             );
         Vl.setFlexDirection(FlexDirection.COLUMN);
         Vl.setMargin(Horizontal.AUTO, Vertical.RESPONSIVE_L);
@@ -119,6 +120,41 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
         return items;
     }*/
 
+    private Component createIndiciSection() {
+        ListItem indiceF=new ListItem(" "+contatto.getIndiceFragilitaFisica(),"fragilità fisica:");
+        indiceF.addClassName("h2");
+        indiceF.getElement().setAttribute("with-divider", true);
+        indiceF.setId("fisica");
+        indiceF.setFlexDirection(FlexDirection.ROW);
+
+        ListItem indiceP=new ListItem(" "+contatto.getIndiceFragilitaPsico(),"fragilità psicologica:");
+        indiceP.addClassName("h2");
+        indiceP.getElement().setAttribute("with-divider", true);
+        indiceP.setId("psicologica");
+        indiceP.setFlexDirection(FlexDirection.ROW);
+
+        ListItem indiceS=new ListItem(" "+contatto.getIndiceFragilitaSociale(),"fragilità sociale:");
+        indiceS.addClassName("h2");
+        indiceF.getElement().setAttribute("with-divider", true);
+        indiceS.setId("sociale");
+        indiceS.setFlexDirection(FlexDirection.ROW);
+
+        MyFlexLayout listaIndici = new MyFlexLayout(indiceF, indiceP, indiceS);
+		listaIndici.setFlexDirection(FlexDirection.COLUMN);
+        listaIndici.getElement().setAttribute("with-divider", true);
+
+        return listaIndici;
+
+    }
+
+
+    private Component createIndiceHeader() {
+        Label header = new Label("Indici di fragilità:");
+		header.addClassNames("margin-r-v-l", "margin-r-h-l");
+		return header;
+    }
+
+
     public static String formatDate(LocalDate date) {
         return date.getDayOfMonth()+"/"+date.getMonthValue()+"/"+date.getYear();
 	}
@@ -141,7 +177,7 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
         stat.setId("status");
         stat.getElement().setProperty("white.space", "pre-line");
 
-		updated = new ListItem(createTertiaryIcon(VaadinIcon.CALENDAR)," "+ contatto.getQuestionario().getDataCompilazione().getDay()+"/"+contatto.getQuestionario().getDataCompilazione().getMonth()+"/"+contatto.getQuestionario().getDataCompilazione().getYear(),"data ultimo questionario");
+		updated = new ListItem(createTertiaryIcon(VaadinIcon.CALENDAR),contatto.getQuestionario().getDataCompilazione().getDay()+"/"+contatto.getQuestionario().getDataCompilazione().getMonth(),"data ultimo questionario");
 		updated.setFlexDirection(FlexDirection.ROW);
 
         MyFlexLayout listItems = new MyFlexLayout(nome, stat, updated);

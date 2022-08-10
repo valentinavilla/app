@@ -53,6 +53,9 @@ public class DataGenerator {
             contactGenerator.setData(Contact::setLastName, DataType.LAST_NAME);
             contactGenerator.setData(Contact::setEmail, DataType.EMAIL);
             contactGenerator.setData(Contact::setIDPamac, DataType.ID);
+            contactGenerator.setData(Contact::setIndiceFragilitàFisica, DataType.NUMBER_UP_TO_100);
+            contactGenerator.setData(Contact::setIndiceFragilitàSociale, DataType.NUMBER_UP_TO_100);
+            contactGenerator.setData(Contact::setIndiceFragilitàPsicologica, DataType.NUMBER_UP_TO_100);
 
             Random r = new Random(seed);
             List<Contact> contacts = contactGenerator.create(50, seed).stream().map(contact -> {

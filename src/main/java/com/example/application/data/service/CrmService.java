@@ -28,7 +28,7 @@ public class CrmService {
     }
     
     public Contact getContact(Integer IDPAMAC){
-        return contactRepository.search(IDPAMAC).get(1);
+        return contactRepository.search(IDPAMAC).get(0);
        //for(int i=0; i<contactRepository.count();i++){
         //    if(contactRepository.==IDPAMAC)
        }
