@@ -17,13 +17,21 @@ import com.example.application.views.utili.Vertical;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.charts.Chart;
+import com.vaadin.flow.component.charts.model.ChartType;
+import com.vaadin.flow.component.charts.model.ListSeries;
+import com.vaadin.flow.component.charts.model.TickmarkPlacement;
+import com.vaadin.flow.component.charts.model.XAxis;
+import com.vaadin.flow.component.charts.model.YAxis;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.map.configuration.Configuration;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexDirection;
 import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexWrap;
@@ -49,9 +57,6 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 	private VerticalLayout content=new VerticalLayout();
     private ContactForm form;
     public int VISIBLE_RECENT_TRANSACTIONS = 4;
-
-    //private static final ThreadLocal<DateTimeFormatter> dateFormat = ThreadLocal
-   // .withInitial(() -> DateTimeFormatter.ofPattern("MMM dd, YYYY"));
 
     ListItem nome;
     ListItem stat;
@@ -143,7 +148,33 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 		listaIndici.setFlexDirection(FlexDirection.COLUMN);
         listaIndici.getElement().setAttribute("with-divider", true);
 
-        return listaIndici;
+        Chart chart = new Chart(ChartType.LINE);
+
+        com.vaadin.flow.component.charts.model.Configuration conf = chart.getConfiguration();
+        conf.getChart().setPolar(true);
+        // Create the range series
+        ListSeries series = new ListSeries("indici di fragilità:",
+        contatto.getIndiceFragilitaFisica(),contatto.getIndiceFragilitaPsico(),contatto.getIndiceFragilitaSociale());
+        conf.addSeries(series);
+
+        // Set the category labels on the X axis correspondingly
+        XAxis xaxis = new XAxis();
+        xaxis.setCategories("fragilità fisica","fragilità psicologica","fragilità sociale");
+        xaxis.setTickmarkPlacement(TickmarkPlacement.ON);
+        xaxis.setLineWidth(0);
+        conf.addxAxis(xaxis);
+
+    // Configure the Y axis
+        YAxis yaxis = new YAxis();
+        yaxis.setGridLineInterpolation("polygon"); // Webby look
+        yaxis.setMin(0);
+        yaxis.setTickInterval(10);
+        yaxis.getLabels().setStep(1);
+        conf.addyAxis(yaxis);
+
+        HorizontalLayout h=new HorizontalLayout(listaIndici, chart);
+        h.setAlignItems(Alignment.CENTER);
+        return h;
 
     }
 
