@@ -1,7 +1,5 @@
 package com.example.application.data.entity;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Email;
@@ -14,12 +12,12 @@ import com.example.application.views.questionario.QuestionarioForm;
 public class Contact extends AbstractEntity {
 
     private Integer IDPamac;
-    //private List<Richiesta> richieste;
+    private String indirizzo;
+    //private Richiesta richieste;
     private QuestionarioForm questionario;
     private Integer indiceFragilitàFisica=0;
     private Integer indiceFragilitàPsicologica=0;
     private Integer indiceFragilitàSociale=0;
-
 
     @NotEmpty
     private String firstName = "";
@@ -35,15 +33,20 @@ public class Contact extends AbstractEntity {
     @NotEmpty
     private String email = "";
 
-    public enum genere{
-        M,
-        F
+    private Genere sesso=Genere.M;
+
+    public void setGenere(Genere s){
+        this.sesso=s;
     }
 
-    private genere sesso=genere.M;
-
-    public void setGenere(genere s){
-        this.sesso=s;
+    /* 
+    public String getGenere(){
+        if(sesso==Genere.M){return "M";}
+        else{return "F";}
+    }*/
+    
+    public Genere getGenere(){
+        return sesso;
     }
 
     @Override
@@ -87,8 +90,8 @@ public class Contact extends AbstractEntity {
     }
 
     public String getImageUrl() {
-        if(sesso==genere.M){return "images/tipo.jpg";}
-        if (sesso==genere.F) {return "images/tipa.jpg";}
+        if(sesso==Genere.M){return "images/tipo.jpg";}
+        if (sesso==Genere.F) {return "images/tipa.jpg";}
         return "images/pic.jpg";
     }
 
@@ -97,23 +100,25 @@ public class Contact extends AbstractEntity {
         return questionario;
     }
 
-    /*public void addNuovaRichiesta(String richiesta){
-        richieste.add( new Richiesta(richiesta));
-    }
-    public void addNuovaRichiesta(Richiesta richiesta){
-        richieste.add(richiesta);
+    /* 
+    public void setRichiesta(Richiesta richiesta){
+       // richieste.add(richiesta);
+       this.richieste=richiesta;
     }
 
-    public List<Richiesta> getRichieste(){
+    public Richiesta getRichieste(){
         return richieste;
-    }*/
-
+    }
+*/
     public void setIndiceFragilitàFisica(int i){this.indiceFragilitàFisica=i;}
     public void setIndiceFragilitàPsicologica(int i){this.indiceFragilitàPsicologica=i;}
     public void setIndiceFragilitàSociale(int i){this.indiceFragilitàSociale=i;}
     public int getIndiceFragilitaFisica(){return indiceFragilitàFisica;}
     public int getIndiceFragilitaPsico(){return indiceFragilitàPsicologica;}
     public int getIndiceFragilitaSociale(){return indiceFragilitàSociale;}
+
+    public void setAddress(String address){this.indirizzo=address;}
+    public String getAddress(){return indirizzo;}
 
  }
 

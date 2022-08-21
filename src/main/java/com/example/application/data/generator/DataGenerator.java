@@ -1,9 +1,9 @@
 package com.example.application.data.generator;
 
 import com.example.application.data.entity.Contact;
+import com.example.application.data.entity.Genere;
 import com.example.application.data.entity.Richiesta;
 import com.example.application.data.entity.Status;
-import com.example.application.data.entity.Contact.genere;
 import com.example.application.data.repository.ContactRepository;
 import com.example.application.data.repository.RichiesteRepository;
 import com.example.application.data.repository.StatusRepository;
@@ -25,8 +25,9 @@ public class DataGenerator {
 
     @Bean
     public CommandLineRunner loadData(ContactRepository contactRepository,
-            StatusRepository statusRepository //,RichiesteRepository richiesteRepository) {
-    ){
+            StatusRepository statusRepository //,RichiesteRepository richiesteRepository
+            ) {
+    {
         return args -> {
             Logger logger = LoggerFactory.getLogger(getClass());
             if (contactRepository.count() != 0L) {
@@ -41,7 +42,8 @@ public class DataGenerator {
                     .saveAll(Stream.of("Presa in carico", "Da confermare", "Cancellato", "Attesa servizi", "Confermato","Calendarizzato")
                             .map(Status::new).collect(Collectors.toList()));
 
-            /*List<Richiesta> requests = richiesteRepository
+                            /* 
+            List<Richiesta> requests = richiesteRepository
                     .saveAll(Stream.of("Richiesta di Trasporto", "Richiesta Ricetta", "Richiesta visita medica", "Richiesta pasti", "Richiesta assistenza domiciliare","Richiesta visita di Routine")
                             .map(Richiesta::new).collect(Collectors.toList()));
             */
@@ -56,13 +58,14 @@ public class DataGenerator {
             contactGenerator.setData(Contact::setIndiceFragilitàFisica, DataType.NUMBER_UP_TO_100);
             contactGenerator.setData(Contact::setIndiceFragilitàSociale, DataType.NUMBER_UP_TO_100);
             contactGenerator.setData(Contact::setIndiceFragilitàPsicologica, DataType.NUMBER_UP_TO_100);
+            contactGenerator.setData(Contact::setAddress, DataType.ADDRESS);
 
             Random r = new Random(seed);
             List<Contact> contacts = contactGenerator.create(50, seed).stream().map(contact -> {
                 contact.setStatus(statuses.get(r.nextInt(statuses.size())));
-               // contact.addNuovaRichiesta(requests.get(r.nextInt(requests.size())));
+                //contact.setRichiesta(requests.get(r.nextInt(requests.size())));
 
-                if(Math.random()>0.5)contact.setGenere(genere.F);
+                if(Math.random()>0.5){contact.setGenere(Genere.F);}
                 return contact;
             }).collect(Collectors.toList());
 
@@ -71,5 +74,5 @@ public class DataGenerator {
             logger.info("Generated demo data");
         };
     }
-
+  }
 }

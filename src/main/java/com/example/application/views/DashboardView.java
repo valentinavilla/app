@@ -20,7 +20,7 @@ public class DashboardView extends VerticalLayout {
         this.service = service;
         addClassName("dashboard-view");
         setDefaultHorizontalComponentAlignment(Alignment.CENTER); 
-        add(getContactStats(), getStatusChart());
+        add(getContactStats(), getStatusChart(), getGenderChart());
     }   
 
     private Component getContactStats() {
@@ -35,6 +35,15 @@ public class DashboardView extends VerticalLayout {
         DataSeries dataSeries = new DataSeries();
         service.findAllStatuses().forEach(status ->
             dataSeries.add(new DataSeriesItem(status.getName(), status.getStatusCount()))); 
+        chart.getConfiguration().setSeries(dataSeries);
+        return chart;
+    }
+
+    private Chart getGenderChart() {
+        Chart chart = new Chart(ChartType.PIE); 
+
+        DataSeries dataSeries = new DataSeries();
+        service.findAllGender().forEach(genere-> dataSeries.add(new DataSeriesItem(genere.getName(), genere.getGenereCount())));
         chart.getConfiguration().setSeries(dataSeries);
         return chart;
     }

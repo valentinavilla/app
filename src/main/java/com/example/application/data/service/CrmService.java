@@ -1,10 +1,12 @@
 package com.example.application.data.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.example.application.data.entity.Contact;
+import com.example.application.data.entity.Genere;
 import com.example.application.data.repository.ContactRepository;
 import com.example.application.data.repository.StatusRepository;
 
@@ -54,4 +56,10 @@ public class CrmService {
     public List<com.example.application.data.entity.Status> findAllStatuses(){
         return statusRepository.findAll();
     }
+
+    public List<Genere> findAllGender(){
+        List<Genere>i=new ArrayList<Genere>();
+        i.add(Genere.M);
+        i.add(Genere.F);
+        return i; }
 }

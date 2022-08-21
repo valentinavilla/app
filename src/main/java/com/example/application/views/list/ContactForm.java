@@ -3,6 +3,7 @@ package com.example.application.views.list;
 import java.util.List;
 
 import com.example.application.data.entity.Contact;
+import com.example.application.data.entity.Genere;
 import com.example.application.data.entity.Status;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -12,6 +13,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -20,10 +22,13 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
 public class ContactForm extends FormLayout{
-  TextField firstName = new TextField("First name"); 
-  TextField lastName = new TextField("Last name");
+  TextField firstName = new TextField("Nome"); 
+  TextField lastName = new TextField("Cognome");
   EmailField email = new EmailField("Email");
-  ComboBox<Status> status = new ComboBox<>("Status");
+  ComboBox<Status> status = new ComboBox<>("Stato");
+  TextField address= new TextField("Indirizzo"); 
+  RadioButtonGroup<Genere> sesso=new RadioButtonGroup<>();
+  
 
   Binder<Contact> binder= new BeanValidationBinder<>(Contact.class);
   private Contact contact;
@@ -41,11 +46,38 @@ public class ContactForm extends FormLayout{
     status.setItems(list2);
     status.setItemLabelGenerator(Status::getName);
 
+    sesso.setLabel("sesso");
+    sesso.setItems(Genere.M,Genere.F);
+
     add(firstName, 
         lastName,
         email,
         status,
+        address,
+        sesso,
         createButtonsLayout());
+  }
+
+
+    public ContactForm(List<Status> findAllStatuses, Contact contatto) {
+      this.contact=contatto;
+      addClassName("contact-form"); 
+
+      binder.bindInstanceFields(this);
+  
+      status.setItems(findAllStatuses);
+      status.setItemLabelGenerator(Status::getName);
+  
+      sesso.setLabel("sesso");
+      sesso.setItems(Genere.M,Genere.F);
+  
+      add(firstName, 
+          lastName,
+          email,
+          status,
+          address,
+          sesso,
+          createButtonsLayout());
   }
 
 

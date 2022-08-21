@@ -26,13 +26,12 @@ import com.vaadin.flow.component.charts.model.YAxis;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.map.configuration.Configuration;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexLayout.ContentAlignment;
 import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexDirection;
 import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexWrap;
 import com.vaadin.flow.component.tabs.Tab;
@@ -61,33 +60,37 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
     ListItem nome;
     ListItem stat;
     ListItem updated;
+    ListItem indirizzo;
+    ListItem email;
 
 
     public InfoUtente(CrmService s){
         this.service=s;
-        if (service.getContact(idContatto)==null){
+        contatto=service.getContact(idContatto);
+        if (contatto==null){
             VerticalLayout v=new VerticalLayout();
             v.add("UTENTE NON TROVATO");
             add(v);}
         else{
-            contatto=service.getContact(idContatto);
             add(getTabs(),content);}
     }
 
-    private void configureForm() {
+    private ContactForm configureForm() {
         form = new ContactForm( service.findAllStatuses()); 
+        form.setContact(contatto);
         form.setWidth("25em");
+        return form;
 
-        //form.addListener(ContactForm.SaveEvent.class, this::saveContact); 
-        //form.addListener(ContactForm.DeleteEvent.class, this::deleteContact); 
-        //form.addListener(ContactForm.CloseEvent.class, e -> closeEditor());
+       // form.addListener(ContactForm.SaveEvent.class, this::saveContact); 
+       // form.addListener(ContactForm.DeleteEvent.class, this::deleteContact); 
+        
     }
 
     private Component configureInfo(Contact c) {
         MyFlexLayout Vl=new MyFlexLayout(
             createImageSection(),
             createRecentRequestsHeader(),
-            //createRecentRequestsList()
+            createRecentRequestsList(),
             createIndiceHeader(),
             createIndiciSection()
             );
@@ -98,12 +101,12 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
     }
 
 
-   /* private Component createRecentRequestsList() {
+   private Component createRecentRequestsList() {
         Div items = new Div();
 		items.addClassNames("bsb-b", "padding-b-l");
 
-		for (int i = 0; i < VISIBLE_RECENT_TRANSACTIONS; i++) {
-			Richiesta request = contatto.getRichieste().get(i);
+		/*for (int i = 0; i < VISIBLE_RECENT_TRANSACTIONS; i++) {
+			Richiesta request = contatto.getRichieste();
 			Label label = new Label(request.getStatoRichiesta());
             label.addClassName("h5");
 
@@ -113,7 +116,6 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 				label.getElement().getStyle().set("color", "var(--lumo-success-contrast-color)");
 			}
 			ListItem item = new ListItem(
-					
 					request.getName(),
 					formatDate(LocalDate.now().minusDays(i)),
 					label
@@ -122,8 +124,26 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 			item.setDividerVisible(i < VISIBLE_RECENT_TRANSACTIONS - 1);
 			items.add(item);
         }
+        Richiesta request = contatto.getRichieste();
+			Label label = new Label(request.getStatoRichiesta());
+            label.addClassName("h5");
+
+			if (request.getStatoRichiesta()=="Conclusa") {
+                label.getElement().getStyle().set("color","var(--lumo-success-text-color)");
+			} else {
+				label.getElement().getStyle().set("color", "var(--lumo-success-contrast-color)");
+			}
+			ListItem item = new ListItem(
+					request.getName(),
+					formatDate(LocalDate.now()),
+					label
+			);
+			// Dividers for all but the last item
+			item.setDividerVisible(true);
+			items.add(item);*/
+       
         return items;
-    }*/
+    }
 
     private Component createIndiciSection() {
         ListItem indiceF=new ListItem(" "+contatto.getIndiceFragilitaFisica(),"fragilità fisica:");
@@ -164,27 +184,26 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
         xaxis.setLineWidth(0);
         conf.addxAxis(xaxis);
 
-    // Configure the Y axis
+        // Configure the Y axis
         YAxis yaxis = new YAxis();
         yaxis.setGridLineInterpolation("polygon"); // Webby look
         yaxis.setMin(0);
         yaxis.setTickInterval(10);
-        yaxis.getLabels().setStep(1);
+        yaxis.getLabels().setStep(3);
         conf.addyAxis(yaxis);
 
         HorizontalLayout h=new HorizontalLayout(listaIndici, chart);
         h.setAlignItems(Alignment.CENTER);
+        h.setJustifyContentMode(JustifyContentMode.CENTER);
+        h.getElement().setAttribute("with-divider", true);
         return h;
-
     }
-
 
     private Component createIndiceHeader() {
         Label header = new Label("Indici di fragilità:");
 		header.addClassNames("margin-r-v-l", "margin-r-h-l");
 		return header;
     }
-
 
     public static String formatDate(LocalDate date) {
         return date.getDayOfMonth()+"/"+date.getMonthValue()+"/"+date.getYear();
@@ -194,24 +213,38 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
         Image image = new Image(contatto.getImageUrl(),"Immagine profilo");
         image.addClassName("margin-h-l");
         setBorderRadius(BorderRadius._50, image);
-		image.setHeight("200px");
-		image.setWidth("200px");
+		image.setHeight("250px");
+		image.setWidth("250px");
 
-        nome=new ListItem(createTertiaryIcon(VaadinIcon.MALE)," "+contatto.getFirstName()+" "+contatto.getLastName(),"nome");
+        nome=new ListItem(createTertiaryIcon(VaadinIcon.MALE)," "+contatto.getFirstName()+" "+contatto.getLastName()," nome");
         nome.addClassName("h2");
         nome.getElement().setAttribute("with-divider", true);
         nome.setId("nome");
         nome.setFlexDirection(FlexDirection.ROW);
 
-        stat=new ListItem(createTertiaryIcon(VaadinIcon.INFO)," "+contatto.getStatus().toString(),"stato");
+        stat=new ListItem(createTertiaryIcon(VaadinIcon.INFO)," "+contatto.getStatus().toString()," stato");
         stat.getElement().setAttribute("with-divider", true);
         stat.setId("status");
         stat.getElement().setProperty("white.space", "pre-line");
 
-		updated = new ListItem(createTertiaryIcon(VaadinIcon.CALENDAR),contatto.getQuestionario().getDataCompilazione().getDay()+"/"+contatto.getQuestionario().getDataCompilazione().getMonth(),"data ultimo questionario");
+		updated = new ListItem(createTertiaryIcon(VaadinIcon.CALENDAR),contatto.getQuestionario().getDataCompilazione().getDay()+"/"+contatto.getQuestionario().getDataCompilazione().getMonth(),"  data ultimo questionario");
 		updated.setFlexDirection(FlexDirection.ROW);
 
-        MyFlexLayout listItems = new MyFlexLayout(nome, stat, updated);
+        indirizzo=new ListItem(createTertiaryIcon(VaadinIcon.LOCATION_ARROW)," "+contatto.getAddress(),"  indirizzo:");
+        indirizzo.addClassName("h2");
+        indirizzo.getElement().setAttribute("with-divider", true);
+        indirizzo.setId("nome");
+        indirizzo.setFlexDirection(FlexDirection.ROW);
+
+        email=new ListItem(createTertiaryIcon(VaadinIcon.CHAT)," "+contatto.getEmail()," email:");
+        email.addClassName("h2");
+        email.getElement().setAttribute("with-divider", true);
+        email.setId("nome");
+        email.setFlexDirection(FlexDirection.ROW);
+
+
+
+        MyFlexLayout listItems = new MyFlexLayout(nome, stat, updated, indirizzo,email);
 		listItems.setFlexDirection(FlexDirection.COLUMN);
         listItems.getElement().setAttribute("with-divider", true);
 
@@ -245,6 +278,7 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 
 		Button viewAll = new Button("Vedi tutte");
         viewAll.addThemeVariants(ButtonVariant.LUMO_SMALL);
+    
         viewAll.getElement().setAttribute("aria-label", "Vedi tutte");
 		viewAll.addClickListener(
 				e -> Notification.show("da implementare", 2000,Notification.Position.BOTTOM_CENTER));
@@ -252,6 +286,8 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 
 		MyFlexLayout header = new MyFlexLayout(titolo, viewAll);
 		header.setAlignItems(Alignment.CENTER);
+        header.setAlignContent(ContentAlignment.SPACE_BETWEEN);
+        header.expand(titolo);
 		header.setMargin(Bottom.M, Horizontal.RESPONSIVE_L, Top.L);
 		return header;
 	}
@@ -285,7 +321,7 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 		} else if (tab.equals(questionario)) {
 			content.add(new QuestionarioView());
 		} else {
-			content.add(new Paragraph("Qui vedrai eventuali richieste/annotazioni"));
+		    content.add(configureForm());
 		}
 	}
 
