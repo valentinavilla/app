@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import com.example.application.data.entity.Contact;
 import com.example.application.data.entity.Richiesta;
 import com.example.application.data.service.CrmService;
-import com.example.application.views.list.ContactForm;
+import com.example.application.views.list.ModifyForm;
 import com.example.application.views.questionario.QuestionarioView;
 import com.example.application.views.utili.BorderRadius;
 import com.example.application.views.utili.Bottom;
@@ -54,7 +54,7 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 	private Tab questionario;
 	private Tab altro;
 	private VerticalLayout content=new VerticalLayout();
-    private ContactForm form;
+    private ModifyForm form;
     public int VISIBLE_RECENT_TRANSACTIONS = 4;
 
     ListItem nome;
@@ -75,8 +75,8 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
             add(getTabs(),content);}
     }
 
-    private ContactForm configureForm() {
-        form = new ContactForm( service.findAllStatuses()); 
+    private ModifyForm configureForm() {
+        form = new ModifyForm( service.findAllStatuses(), service); 
         form.setContact(contatto);
         form.setWidth("25em");
         return form;
@@ -124,23 +124,24 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 			item.setDividerVisible(i < VISIBLE_RECENT_TRANSACTIONS - 1);
 			items.add(item);
         }
+        */
         Richiesta request = contatto.getRichieste();
 			Label label = new Label(request.getStatoRichiesta());
             label.addClassName("h5");
 
 			if (request.getStatoRichiesta()=="Conclusa") {
-                label.getElement().getStyle().set("color","var(--lumo-success-text-color)");
+                label.getElement().getStyle().set("color","green");
 			} else {
-				label.getElement().getStyle().set("color", "var(--lumo-success-contrast-color)");
+				label.getElement().getStyle().set("color", "red");
 			}
 			ListItem item = new ListItem(
 					request.getName(),
 					formatDate(LocalDate.now()),
-					label
+                    label
 			);
 			// Dividers for all but the last item
 			item.setDividerVisible(true);
-			items.add(item);*/
+			items.add(item);
        
         return items;
     }
@@ -315,6 +316,7 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 
      private void setContent(Tab tab) {
 		content.removeAll();
+       
 
 		if (tab.equals(paziente)) {
             content.add(configureInfo(contatto));

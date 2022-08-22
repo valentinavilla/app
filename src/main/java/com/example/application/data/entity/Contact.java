@@ -13,7 +13,11 @@ public class Contact extends AbstractEntity {
 
     private Integer IDPamac;
     private String indirizzo;
-    //private Richiesta richieste;
+
+    @NotNull
+    @ManyToOne
+    private Richiesta richieste;
+
     private QuestionarioForm questionario;
     private Integer indiceFragilitàFisica=0;
     private Integer indiceFragilitàPsicologica=0;
@@ -38,12 +42,6 @@ public class Contact extends AbstractEntity {
     public void setGenere(Genere s){
         this.sesso=s;
     }
-
-    /* 
-    public String getGenere(){
-        if(sesso==Genere.M){return "M";}
-        else{return "F";}
-    }*/
     
     public Genere getGenere(){
         return sesso;
@@ -100,7 +98,7 @@ public class Contact extends AbstractEntity {
         return questionario;
     }
 
-    /* 
+    
     public void setRichiesta(Richiesta richiesta){
        // richieste.add(richiesta);
        this.richieste=richiesta;
@@ -109,7 +107,7 @@ public class Contact extends AbstractEntity {
     public Richiesta getRichieste(){
         return richieste;
     }
-*/
+
     public void setIndiceFragilitàFisica(int i){this.indiceFragilitàFisica=i;}
     public void setIndiceFragilitàPsicologica(int i){this.indiceFragilitàPsicologica=i;}
     public void setIndiceFragilitàSociale(int i){this.indiceFragilitàSociale=i;}

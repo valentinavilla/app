@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.application.data.entity.Contact;
 import com.example.application.data.entity.Genere;
 import com.example.application.data.entity.Status;
+import com.example.application.data.service.CrmService;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
@@ -13,7 +14,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -27,27 +27,30 @@ public class ContactForm extends FormLayout{
   EmailField email = new EmailField("Email");
   ComboBox<Status> status = new ComboBox<>("Stato");
   TextField address= new TextField("Indirizzo"); 
-  RadioButtonGroup<Genere> sesso=new RadioButtonGroup<>();
+  //RadioButtonGroup<Genere> sesso=new RadioButtonGroup<>();
+  ComboBox<Genere> sesso=new ComboBox<>("sesso");
   
 
   Binder<Contact> binder= new BeanValidationBinder<>(Contact.class);
   private Contact contact;
+  CrmService service;
 
   Button save = new Button("Save");
   Button delete = new Button("Delete");
   Button close = new Button("Cancel");
     
 
-  public ContactForm( List<Status> list2) {
+  public ContactForm( List<Status> list2,CrmService s) {
     addClassName("contact-form"); 
+    this.service=s;
 
     binder.bindInstanceFields(this);
 
     status.setItems(list2);
     status.setItemLabelGenerator(Status::getName);
 
-    sesso.setLabel("sesso");
-    sesso.setItems(Genere.M,Genere.F);
+    sesso.setItems(service.findAllGender());
+    sesso.setItemLabelGenerator(Genere::getName);
 
     add(firstName, 
         lastName,

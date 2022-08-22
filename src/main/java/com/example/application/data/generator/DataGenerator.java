@@ -25,7 +25,7 @@ public class DataGenerator {
 
     @Bean
     public CommandLineRunner loadData(ContactRepository contactRepository,
-            StatusRepository statusRepository //,RichiesteRepository richiesteRepository
+            StatusRepository statusRepository ,RichiesteRepository richiesteRepository
             ) {
     {
         return args -> {
@@ -42,11 +42,11 @@ public class DataGenerator {
                     .saveAll(Stream.of("Presa in carico", "Da confermare", "Cancellato", "Attesa servizi", "Confermato","Calendarizzato")
                             .map(Status::new).collect(Collectors.toList()));
 
-                            /* 
+                            
             List<Richiesta> requests = richiesteRepository
                     .saveAll(Stream.of("Richiesta di Trasporto", "Richiesta Ricetta", "Richiesta visita medica", "Richiesta pasti", "Richiesta assistenza domiciliare","Richiesta visita di Routine")
                             .map(Richiesta::new).collect(Collectors.toList()));
-            */
+            
 
             logger.info("... generating 50 Contact entities...");
             ExampleDataGenerator<Contact> contactGenerator = new ExampleDataGenerator<>(Contact.class,
@@ -63,7 +63,7 @@ public class DataGenerator {
             Random r = new Random(seed);
             List<Contact> contacts = contactGenerator.create(50, seed).stream().map(contact -> {
                 contact.setStatus(statuses.get(r.nextInt(statuses.size())));
-                //contact.setRichiesta(requests.get(r.nextInt(requests.size())));
+                contact.setRichiesta(requests.get(r.nextInt(requests.size())));
 
                 if(Math.random()>0.5){contact.setGenere(Genere.F);}
                 return contact;

@@ -37,12 +37,12 @@ public class Richiesta extends AbstractEntity{
     public String getStatoRichiesta(){return statoRichiesta.toString();}
     public void setStatoRichiesta(StatoRichiesta s){this.statoRichiesta=s;}
 
-    @Formula("(select count(c.id) from Contact c where c.richiesta_id = id)") 
-    private int requestsCount;
+   // @Formula("(select count(c.id) from Contact c where c.richiesta_id = id)") 
+    //private int requestsCount;
 
-    public int getRequestCount(){
-        return requestsCount;
-    }
+   // public int getRequestCount(){
+    //    return requestsCount;
+    //}
 
     @Override
     public String toString(){
