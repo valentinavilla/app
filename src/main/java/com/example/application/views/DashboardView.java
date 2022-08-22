@@ -43,7 +43,7 @@ public class DashboardView extends VerticalLayout {
         Chart chart = new Chart(ChartType.PIE); 
 
         DataSeries dataSeries = new DataSeries();
-        service.findAllGender().forEach(genere-> dataSeries.add(new DataSeriesItem(genere.getName(), genere.getGenereCount())));
+        service.findAllGender().forEach(genere-> dataSeries.add(new DataSeriesItem(genere.getName(), service.getGenereCount(genere))));
         chart.getConfiguration().setSeries(dataSeries);
         return chart;
     }

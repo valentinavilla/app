@@ -11,10 +11,21 @@ public enum Genere {
         else{return "M";}
     }
 
-    @Formula("(select count(c.id) from Contact c where c.sesso_id = id)") 
+    @Formula("(select count(c.id) from Contact c where c.sesso=M)") 
+    private int MCount;
+
+    public int getMCount() {
+        return MCount;
+    }
+
+    public int getFCount() {
+        return 50-MCount;}
+    
+
+    @Formula("(select count(c.id) from Contact c where c.sesso=M)") 
     private int genereCount;
 
-    public int getGenereCount() {
+    public Number getgenereCount() {
         return genereCount;
     }
 

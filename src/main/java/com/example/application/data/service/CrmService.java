@@ -62,4 +62,16 @@ public class CrmService {
         i.add(Genere.M);
         i.add(Genere.F);
         return i; }
+
+    public int getGenereCount(Genere g){
+        int f=0;
+        int m=0;
+        for(int i=0; i<countContacts();i++){
+            if(contactRepository.findAll().get(i).getGenere()==Genere.M)m++;
+            else{f++;}
+        }
+        if(g==Genere.M)return m;
+        else{return f;}
+
+    }
 }
