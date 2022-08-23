@@ -131,7 +131,10 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 
 			if (request.getStatoRichiesta()=="Conclusa") {
                 label.getElement().getStyle().set("color","green");
-			} else {
+			} 
+            if (request.getStatoRichiesta()=="Esaminata") {
+                label.getElement().getStyle().set("color","orange");}
+            else {
 				label.getElement().getStyle().set("color", "red");
 			}
 			ListItem item = new ListItem(
@@ -141,6 +144,8 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 			);
 			// Dividers for all but the last item
 			item.setDividerVisible(true);
+            item.getContent().setAlignItems(Alignment.CENTER);
+            item.setMargin(Bottom.M, Horizontal.RESPONSIVE_L, Top.L);
 			items.add(item);
        
         return items;
