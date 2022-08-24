@@ -63,8 +63,10 @@ public class DataGenerator {
             Random r = new Random(seed);
             List<Contact> contacts = contactGenerator.create(50, seed).stream().map(contact -> {
                 contact.setStatus(statuses.get(r.nextInt(statuses.size())));
-                contact.setRichiesta(requests.get(r.nextInt(requests.size())));
-
+                //int q=(int) (Math.random()*10);
+                for(int i=0;i<4;i++){
+                contact.setRichiesta(requests.get(r.nextInt(requests.size())),i);
+                }
                 if(Math.random()>0.5){contact.setGenere(Genere.F);}
                 return contact;
             }).collect(Collectors.toList());

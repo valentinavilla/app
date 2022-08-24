@@ -2,6 +2,8 @@ package com.example.application.views;
 
 import java.time.LocalDate;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.application.data.entity.Contact;
 import com.example.application.data.entity.Richiesta;
 import com.example.application.data.service.CrmService;
@@ -44,6 +46,7 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+@Transactional
 @Route(value = "InfoUtente",layout=MainLayout.class) 
 @PageTitle("InfoUtente")
 public class InfoUtente extends VerticalLayout implements HasUrlParameter<Integer> ,BeforeEnterObserver {
@@ -105,15 +108,17 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
         Div items = new Div();
 		items.addClassNames("bsb-b", "padding-b-l");
 
-		/*for (int i = 0; i < VISIBLE_RECENT_TRANSACTIONS; i++) {
-			Richiesta request = contatto.getRichieste();
+		for (int i = 0; i < VISIBLE_RECENT_TRANSACTIONS; i++) {
+			Richiesta request = contatto.getRichieste().get(i);
 			Label label = new Label(request.getStatoRichiesta());
             label.addClassName("h5");
 
 			if (request.getStatoRichiesta()=="Conclusa") {
-                label.getElement().getStyle().set("color","var(--lumo-success-text-color)");
-			} else {
-				label.getElement().getStyle().set("color", "var(--lumo-success-contrast-color)");
+                label.getElement().getStyle().set("color","green");
+			} if(request.getStatoRichiesta()=="Esaminata") {
+                label.getElement().getStyle().set("color","orange");}
+            else {
+				label.getElement().getStyle().set("color", "red");
 			}
 			ListItem item = new ListItem(
 					request.getName(),
@@ -122,31 +127,10 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 			);
 			// Dividers for all but the last item
 			item.setDividerVisible(i < VISIBLE_RECENT_TRANSACTIONS - 1);
-			items.add(item);
-        }
-        */
-        Richiesta request = contatto.getRichieste();
-			Label label = new Label(request.getStatoRichiesta());
-            label.addClassName("h5");
-
-			if (request.getStatoRichiesta()=="Conclusa") {
-                label.getElement().getStyle().set("color","green");
-			} 
-            if (request.getStatoRichiesta()=="Esaminata") {
-                label.getElement().getStyle().set("color","orange");}
-            else {
-				label.getElement().getStyle().set("color", "red");
-			}
-			ListItem item = new ListItem(
-					request.getName(),
-					formatDate(LocalDate.now()),
-                    label
-			);
-			// Dividers for all but the last item
-			item.setDividerVisible(true);
             item.getContent().setAlignItems(Alignment.CENTER);
             item.setMargin(Bottom.M, Horizontal.RESPONSIVE_L, Top.L);
 			items.add(item);
+        }
        
         return items;
     }

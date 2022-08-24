@@ -1,12 +1,18 @@
 package com.example.application.data.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.example.application.views.questionario.QuestionarioForm;
+
 
 @Entity
 public class Contact extends AbstractEntity {
@@ -15,8 +21,8 @@ public class Contact extends AbstractEntity {
     private String indirizzo;
 
     @NotNull
-    @ManyToOne
-    private Richiesta richieste;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Richiesta> richieste;
 
     private QuestionarioForm questionario;
     private Integer indiceFragilitàFisica=0;
@@ -99,12 +105,12 @@ public class Contact extends AbstractEntity {
     }
 
     
-    public void setRichiesta(Richiesta richiesta){
-       // richieste.add(richiesta);
-       this.richieste=richiesta;
+    public void setRichiesta(Richiesta richiesta, int posizione){
+        if(this.richieste==null){this.richieste=new ArrayList<>();}
+        richieste.add(posizione,richiesta);
     }
 
-    public Richiesta getRichieste(){
+    public List<Richiesta> getRichieste(){
         return richieste;
     }
 
