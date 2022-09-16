@@ -2,11 +2,14 @@ package com.example.application.data.generator;
 
 import com.example.application.data.entity.Contact;
 import com.example.application.data.entity.Genere;
+import com.example.application.data.entity.Questionario;
 import com.example.application.data.entity.Richiesta;
 import com.example.application.data.entity.Status;
+import com.example.application.data.entity.Visita;
 import com.example.application.data.repository.ContactRepository;
 import com.example.application.data.repository.RichiesteRepository;
 import com.example.application.data.repository.StatusRepository;
+import com.example.application.data.repository.VisiteRepository;
 import com.vaadin.exampledata.DataType;
 import com.vaadin.exampledata.ExampleDataGenerator;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -25,7 +28,7 @@ public class DataGenerator {
 
     @Bean
     public CommandLineRunner loadData(ContactRepository contactRepository,
-            StatusRepository statusRepository ,RichiesteRepository richiesteRepository
+            StatusRepository statusRepository ,RichiesteRepository richiesteRepository, VisiteRepository visiteRepository
             ) {
     {
         return args -> {
@@ -47,6 +50,9 @@ public class DataGenerator {
                     .saveAll(Stream.of("Richiesta di Trasporto", "Richiesta Ricetta", "Richiesta visita medica", "Richiesta pasti", "Richiesta assistenza domiciliare","Richiesta visita di Routine")
                             .map(Richiesta::new).collect(Collectors.toList()));
             
+            List<Visita> visite = visiteRepository
+                    .saveAll(Stream.of("Visita oculistica", "Visita cardiologica", "Visita endocrinologa", "Visita gastroenterologa", "Visita di routine","Visita neurologica")
+                                .map(Visita::new).collect(Collectors.toList()));
 
             logger.info("... generating 50 Contact entities...");
             ExampleDataGenerator<Contact> contactGenerator = new ExampleDataGenerator<>(Contact.class,
@@ -56,18 +62,20 @@ public class DataGenerator {
             contactGenerator.setData(Contact::setEmail, DataType.EMAIL);
             contactGenerator.setData(Contact::setIDPamac, DataType.ID);
             contactGenerator.setData(Contact::setIndiceFragilitàFisica, DataType.NUMBER_UP_TO_100);
-            contactGenerator.setData(Contact::setIndiceFragilitàSociale, DataType.NUMBER_UP_TO_100);
+            contactGenerator.setData(Contact::setIndiceFragilitàSociale, DataType.NUMBER_UP_TO_10);
             contactGenerator.setData(Contact::setIndiceFragilitàPsicologica, DataType.NUMBER_UP_TO_100);
             contactGenerator.setData(Contact::setAddress, DataType.ADDRESS);
 
             Random r = new Random(seed);
             List<Contact> contacts = contactGenerator.create(50, seed).stream().map(contact -> {
                 contact.setStatus(statuses.get(r.nextInt(statuses.size())));
-                //int q=(int) (Math.random()*10);
+                int q=(int) (Math.random()*10);
+                contact.setQuestionario(new Questionario());
                 for(int i=0;i<4;i++){
                 contact.setRichiesta(requests.get(r.nextInt(requests.size())),i);
-                }
-                if(Math.random()>0.5){contact.setGenere(Genere.F);}
+                contact.setVisite(visite.get(r.nextInt(visite.size())),i);
+                    }
+                if(q>5){contact.setGenere(Genere.F);}
                 return contact;
             }).collect(Collectors.toList());
 

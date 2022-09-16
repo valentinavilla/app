@@ -14,7 +14,9 @@ public interface ContactRepository extends JpaRepository<Contact, UUID> {
     "or lower(c.lastName) like lower(concat('%', :searchTerm, '%'))") 
      List<Contact> search(@Param("searchTerm") String searchTerm);
      
-     @Query("select c from Contact c where c.IDPamac=IDPamac") 
-     List<Contact> search(@Param("IDPamac") Integer IDPamac); 
+    //@Query("select c from Contact c where c.IDPamac=IDPamac")
+    //List<Contact> search(@Param("IDP") Integer IDPamac);
 
+    @Query("select c from Contact c where c.IDPamac = :IDP")  
+    Contact search1(@Param("IDP") Integer IDPamac);
 }

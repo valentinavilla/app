@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import com.example.application.views.questionario.QuestionarioForm;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 
 @Entity
@@ -21,10 +22,19 @@ public class Contact extends AbstractEntity {
     private String indirizzo;
 
     @NotNull
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany  
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Richiesta> richieste;
 
-    private QuestionarioForm questionario;
+    @NotNull
+    @ManyToMany 
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Visita> visite;
+
+    @Transient
+    @ManyToOne
+    private Questionario questionario;
+
     private Integer indiceFragilitàFisica=0;
     private Integer indiceFragilitàPsicologica=0;
     private Integer indiceFragilitàSociale=0;
@@ -99,10 +109,11 @@ public class Contact extends AbstractEntity {
         return "images/pic.jpg";
     }
 
-    public QuestionarioForm getQuestionario() {
-        if(questionario==null){questionario=new QuestionarioForm();}
+    public Questionario getQuestionario() {
+        if(questionario==null){questionario=new Questionario();}
         return questionario;
     }
+    public void setQuestionario(Questionario q){this.questionario=q;}
 
     
     public void setRichiesta(Richiesta richiesta, int posizione){
@@ -112,6 +123,15 @@ public class Contact extends AbstractEntity {
 
     public List<Richiesta> getRichieste(){
         return richieste;
+    }
+
+    public void setVisite(Visita visita, int posizione){
+        if(this.visite==null){this.visite=new ArrayList<>();}
+        visite.add(posizione,visita);
+    }
+
+    public List<Visita> getVisite(){
+        return visite;
     }
 
     public void setIndiceFragilitàFisica(int i){this.indiceFragilitàFisica=i;}

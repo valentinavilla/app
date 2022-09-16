@@ -34,5 +34,7 @@ public class ProfiloCDSView extends VerticalLayout {
         setDefaultHorizontalComponentAlignment(Alignment.START);
         getStyle().set("text-align", "center");
     }
+
+    //private Component getCalendar(){ }
     }   
     

@@ -105,6 +105,7 @@ public class ListView extends VerticalLayout {
 
     private void viewDetails(Contact contatto){
         UI.getCurrent().navigate(InfoUtente.class, contatto.getIDPamac());
+        System.out.println(contatto.getIDPamac());
     }
 
     public void editContact(Contact contact) { 

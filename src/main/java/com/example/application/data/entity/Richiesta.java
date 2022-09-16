@@ -2,8 +2,6 @@ package com.example.application.data.entity;
 
 import javax.persistence.Entity;
 
-import org.hibernate.annotations.Formula;
-
 @Entity
 public class Richiesta extends AbstractEntity{
     private String name;
@@ -12,9 +10,9 @@ public class Richiesta extends AbstractEntity{
         DaEsaminare,
         Annullata,
         Conclusa,
-        Esaminata,
-        DaConfermare
+        Esaminata
     }
+
     private StatoRichiesta statoRichiesta;
 
     public Richiesta(){}
@@ -23,7 +21,6 @@ public class Richiesta extends AbstractEntity{
         Double i=Math.random();
         if(i<0.2){this.statoRichiesta=StatoRichiesta.Annullata;}
         if(i<0.4 && i>0.2){this.statoRichiesta=StatoRichiesta.Conclusa;}
-        if(i<0.6 && i>0.4){this.statoRichiesta=StatoRichiesta.DaConfermare;}
         if(i<0.8 && i>0.6){this.statoRichiesta=StatoRichiesta.DaEsaminare;}
         else{this.statoRichiesta=StatoRichiesta.Esaminata;}
     }

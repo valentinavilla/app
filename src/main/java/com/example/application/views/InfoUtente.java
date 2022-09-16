@@ -6,9 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.application.data.entity.Contact;
 import com.example.application.data.entity.Richiesta;
+import com.example.application.data.entity.Visita;
+import com.example.application.data.entity.Visita.StatoVisita;
 import com.example.application.data.service.CrmService;
-import com.example.application.views.list.ModifyForm;
-import com.example.application.views.questionario.QuestionarioView;
+import com.example.application.views.form.ModifyForm;
+import com.example.application.views.questionario.QuestionarioForm;
 import com.example.application.views.utili.BorderRadius;
 import com.example.application.views.utili.Bottom;
 import com.example.application.views.utili.Horizontal;
@@ -65,17 +67,13 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
     ListItem updated;
     ListItem indirizzo;
     ListItem email;
+    String ora;
 
 
     public InfoUtente(CrmService s){
+        
         this.service=s;
-        contatto=service.getContact(idContatto);
-        if (contatto==null){
-            VerticalLayout v=new VerticalLayout();
-            v.add("UTENTE NON TROVATO");
-            add(v);}
-        else{
-            add(getTabs(),content);}
+        
     }
 
     private ModifyForm configureForm() {
@@ -94,6 +92,8 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
             createImageSection(),
             createRecentRequestsHeader(),
             createRecentRequestsList(),
+            createDiarioHeader(),
+            createDiarioSection(),
             createIndiceHeader(),
             createIndiciSection()
             );
@@ -217,7 +217,7 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
         stat.setId("status");
         stat.getElement().setProperty("white.space", "pre-line");
 
-		updated = new ListItem(createTertiaryIcon(VaadinIcon.CALENDAR),contatto.getQuestionario().getDataCompilazione().getDay()+"/"+contatto.getQuestionario().getDataCompilazione().getMonth(),"  data ultimo questionario");
+		updated = new ListItem(createTertiaryIcon(VaadinIcon.CALENDAR),contatto.getQuestionario().getDataCompilazione()+"","  data ultimo questionario");
 		updated.setFlexDirection(FlexDirection.ROW);
 
         indirizzo=new ListItem(createTertiaryIcon(VaadinIcon.LOCATION_ARROW)," "+contatto.getAddress(),"  indirizzo:");
@@ -268,6 +268,28 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 
 		Button viewAll = new Button("Vedi tutte");
         viewAll.addThemeVariants(ButtonVariant.LUMO_SMALL);
+        Button add= new Button("Nuova Rirchiesta");
+        add.addThemeVariants(ButtonVariant.LUMO_SMALL);
+    
+        viewAll.getElement().setAttribute("aria-label", "Vedi tutte");
+		viewAll.addClickListener(
+				e -> Notification.show("da implementare", 2000,Notification.Position.BOTTOM_CENTER));
+		viewAll.addClassName("margin-l-a");
+
+		MyFlexLayout header = new MyFlexLayout(titolo, viewAll,add);
+		header.setAlignItems(Alignment.CENTER);
+        header.setAlignContent(ContentAlignment.SPACE_BETWEEN);
+        header.expand(titolo);
+		header.setMargin(Bottom.M, Horizontal.RESPONSIVE_L, Top.L);
+		return header;
+	}
+
+    private Component createDiarioHeader() {
+		Label titolo =new Label("Diario:");
+        titolo.addClassName("h2");
+
+		Button viewAll = new Button("Vedi tutto");
+        viewAll.addThemeVariants(ButtonVariant.LUMO_SMALL);
     
         viewAll.getElement().setAttribute("aria-label", "Vedi tutte");
 		viewAll.addClickListener(
@@ -281,6 +303,42 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 		header.setMargin(Bottom.M, Horizontal.RESPONSIVE_L, Top.L);
 		return header;
 	}
+
+    
+   private Component createDiarioSection() {
+    Div items = new Div();
+    items.addClassNames("bsb-b", "padding-b-l");
+
+    for (int i = 0; i < VISIBLE_RECENT_TRANSACTIONS; i++) {
+        Visita visit = contatto.getVisite().get(i);
+        Label label = new Label(visit.getStatoVisita().toString());
+        label.addClassName("h5");
+        double q=Math.random();
+        ora="14:30";
+        if(q<0.2){ora="08:30";}if(q>=0.2 && q<0.4){ora="10:00";}if(q>=0.4 && q<0.5){ora="11:30";}
+        if(q>=0.5 && q<0.7){ora="12:45";}if(q>=0.7 && q<0.9){ora="13:00";}
+
+        if (visit.getStatoVisita()==StatoVisita.svolta) {
+            label.getElement().getStyle().set("color","green");}
+        if (visit.getStatoVisita()==StatoVisita.prenotata) {
+            label.getElement().getStyle().set("color","orange");}
+        else {
+            label.getElement().getStyle().set("color", "red");
+        }
+        ListItem item = new ListItem(
+                visit.getName(),
+                formatDate(LocalDate.now().minusDays(i+2))+" orario: "+ora,
+                label
+        );
+        // Dividers for all but the last item
+        item.setDividerVisible(i < VISIBLE_RECENT_TRANSACTIONS - 1);
+        item.getContent().setAlignItems(Alignment.CENTER);
+        item.setMargin(Bottom.M, Horizontal.RESPONSIVE_L, Top.L);
+        items.add(item);
+        }
+   
+        return items;
+    }
 
     private Tabs getTabs() {
         paziente = new Tab("Paziente");
@@ -310,15 +368,27 @@ public class InfoUtente extends VerticalLayout implements HasUrlParameter<Intege
 		if (tab.equals(paziente)) {
             content.add(configureInfo(contatto));
 		} else if (tab.equals(questionario)) {
-			content.add(new QuestionarioView());
+            QuestionarioForm q=new QuestionarioForm();
+            q.setWidth("25em");
+            //q.addListener(QuestionarioForm.SaveEvent.class, this::saveContact);
+			content.add(q);
+            content.setAlignItems(Alignment.CENTER);
 		} else {
 		    content.add(configureForm());
 		}
+
 	}
 
     @Override
     public void setParameter(BeforeEvent event, Integer parameter) {
         this.idContatto=parameter;
+        contatto=service.getContact(parameter);
+        if (contatto==null){
+            VerticalLayout v=new VerticalLayout();
+            v.add("UTENTE NON TROVATO");
+            add(v);}
+        else{
+            add(getTabs(),content);}
     }
 
     

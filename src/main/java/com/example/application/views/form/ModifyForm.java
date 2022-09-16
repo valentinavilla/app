@@ -1,4 +1,4 @@
-package com.example.application.views.list;
+package com.example.application.views.form;
 
 import java.util.List;
 
